@@ -1,0 +1,32 @@
+body{
+    background: #05021f;
+    color: white;
+}
+
+hr{
+    width: 75%;
+    display: block;
+    margin: 0.5em auto;
+    border-style: inset;
+    border-width: 2px;
+}
+
+a{
+    text-decoration: none;
+    color: white;
+}
+
+a:hover{
+    color: white;
+}
+
+.ava{
+    margin: 5px;
+    width: 5rem;
+    max-height: 5rem;
+}
+
+.username{
+    font-style: italic;
+    font-size: 18px;
+}

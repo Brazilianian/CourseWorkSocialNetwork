@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Title</title>
+
+    <link media="all" rel="stylesheet" th:href="@{/css/navigation.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/chat.css}">
+
+    <script th:src="@{https://kit.fontawesome.com/8144c1797c.js}" crossorigin="anonymous"></script>
+    <script th:src="@{/js/chat.js}"></script>
+</head>
+
+<body>
+<header th:insert="navigation.html ::navigation"></header>
+
+<main>
+<!--    visual of chat-->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+
+                <div class="col-md-8" style="height: 45rem; overflow-y:auto; border: 2px groove #ffffff; background: #ffdc98">
+                    <div th:each="message:${messages}">
+                        <label class="d-flex justify-content-center" th:if="${message.isDifferenceMoreThanThreeHours()}" th:text="${#temporals.format(message.getDateOfSending(), 'dd MMMM HH:mm')}"></label>
+
+                        <div class="d-flex align-items-start flex-column bd-highlight mb-3" th:if="${message.getSender()} == ${person}">
+
+                            <a th:href="@{/profile/} + ${person.getUsername()}">
+                                <img th:if="${message.getSender().getImage() == null}" th:src="@{/images/defaultUser.jpg}" width="30" height="30" class="d-inline-block align-text-top">
+                                <img th:if="${message.getSender().getImage() != null}" th:src="*{'data:image/jpeg;base64,'+{message.getSender().getImage()}}" alt="some" width="30" height="30">
+                            </a>
+
+                            <div th:if="${message.getMessageFiles() != null}">
+                                <pre><label th:if="${message.getText() != null}" th:title="${#temporals.format(message.getDateOfSending(), 'dd-MM-yyyy HH:mm')}" th:text="${message.getText()}" style="display: block;"></label></pre>
+                                <div th:each="file:${message.getMessageFiles()}">
+                                    <th:block th:switch="${file.getFileType().name()}">
+                                        <th:block th:case="'IMAGE'">
+                                            <a th:href="*{'data:image/jpeg;base64,'+{file.getContent()}}" data-lightbox="roadtrip">
+                                                <img class="input" th:src="*{'data:image/jpeg;base64,'+{file.getContent()}}" th:title="${#temporals.format(message.getDateOfSending(), 'dd-MM-yyyy HH:mm')}">
+                                            </a>
+                                        </th:block>
+
+                                        <th:block th:case="'AUDIO'">
+                                            <audio controls th:title="${#temporals.format(message.getDateOfSending(), 'dd-MM-yyyy HH:mm')}">
+                                                <source th:src="*{'data:audio/mp3;base64,'+{file.getContent()}}">
+                                            </audio>
+                                        </th:block>
+
+                                        <th:block th:case="'VIDEO'">
+                                            <video class="input" controls th:title="${#temporals.format(message.getDateOfSending(), 'dd-MM-yyyy HH:mm')}">
+                                                <source th:src="*{'data:video/mp4;base64,'+{file.getContent()}}">
+                                            </video>
+                                        </th:block>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-end flex-column bd-highlight mb-3" th:if="${message.getSender()} == ${user}">
+                            <pre><label th:if="${message.getText() != null}" th:title="${#temporals.format(message.getDateOfSending(), 'dd-MM-yyyy HH:mm')}" class="float-end" th:text="${message.getText()}" style="text-align: right;"></label></pre>
+                            <div th:if="${message.getMessageFiles() != null}">
+                                <div th:each="file:${message.getMessageFiles()}">
+                                    <th:block th:switch="${file.getFileType().name()}">
+                                        <th:block th:case="'IMAGE'">
+                                            <img class="input" th:src="*{'data:image/jpeg;base64,'+{file.getContent()}}" th:name="${file.getFileName()}" th:title="${#temporals.format(message.getDateOfSending(), 'dd-MM-yyyy HH:mm')}">
+                                        </th:block>
+
+                                        <th:block th:case="'AUDIO'">
+                                            <audio controls th:title="${#temporals.format(message.getDateOfSending(), 'dd-MM-yyyy HH:mm')}">
+                                                <source th:src="*{'data:audio/mp3;base64,'+{file.getContent()}}">
+                                            </audio>
+                                        </th:block>
+
+                                        <th:block th:case="'VIDEO'">
+                                            <video class="input" controls th:title="${#temporals.format(message.getDateOfSending(), 'dd-MM-yyyy HH:mm')}">
+                                                <source th:src="*{'data:video/mp4;base64,'+{file.getContent()}}">
+                                            </video>
+                                        </th:block>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="col-md-2">
+            </div>
+        </div>
+    </div>
+</main>
+
+<!--send message-->
+<div class="container">
+    <div class="col"></div>
+    <div class="col">
+    <div id="items"></div>
+        <form th:action="@{/send-message/} + ${person.getUsername()}" method="post" enctype="multipart/form-data">
+            <textarea name="text" class="form-control" placeholder="Пишіть повідомлення тут" id="floatingTextarea" style="max-height: 100px; resize: none;" ></textarea>
+            <div style="float:right;" class="flex">
+                <input onchange="setAudios()" name="audios" id="audio" class="fileMess" type="file" accept="audio/*" multiple>
+                <label for="audio"><i class="fas fa-file-audio"></i></label>
+
+                <input onchange="setVideos()" name="videos" id="video" class="fileMess" type="file" accept="video/*" multiple>
+                <label for="video"><i class="fas fa-video"></i></label>
+
+                <input onchange="setImages()" name="images" id="image" class="fileMess" type="file" accept=".png, .jpg, .jpeg, .jfif" multiple>
+                <label for="image"><i class="fas fa-image"></i></label>
+            </div>
+            <input onclick="removeItems()" type="submit" class="btn btn-primary" value="Надіслати" style="margin: 5px;">
+        </form>
+    </div>
+    <div class="col"></div>
+</div>
+<script th:src="@{https://kit.fontawesome.com/8144c1797c.js}" crossorigin="anonymous"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

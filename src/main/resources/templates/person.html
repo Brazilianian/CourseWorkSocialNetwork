@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link media="all" rel="stylesheet" th:href="@{/css/navigation.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/person.css}">
+
+    <title>Title</title>
+
+<body>
+  <header th:insert="navigation.html :: navigation"></header>
+
+  <div class="container">
+      <div class="row" style="border: 2px groove white;">
+          <div class="col-md-4" style="text-align: center;">
+              <img class="img-thumbnail" th:if="${person.getImage() != null}" th:src="*{'data:image/jpeg;base64,'+${person.getImage()}}" style="margin: 5px;">
+              <img class="img-thumbnail" th:if="${person.getImage() == null}" th:src="@{/images/defaultUser.jpg}" style="margin: 5px;"><br>
+              <span th:text="'@' + ${person.getUsername()}" style="font-size: 22px;"></span>
+          </div>
+          <div class="col-md-7" style="text-align: center;">
+              <span th:text="${person.getSurname()} + ' ' + ${person.getName()}" ></span>
+
+              <div th:if="${isAvailableInfo}">
+                  <label class="personal-info" th:text="${person.getAge()} + ' рочків'"></label> <br>
+                  <label class="personal-info" th:text="${#temporals.format(person.getDateOfBirth(), 'd MMMM yyyy')}"></label> <br>
+                  <label class="form-label personal-info" th:if="${person.getDescription() != null}" th:text="${person.getDescription()}"></label>
+              </div>
+          </div>
+          <div class="col-md-1">
+              <form th:action="@{/messages/} + ${person.getUsername()}" th:method="post">
+                  <button type="submit" class="btn btn-primary mb-3 button-icon" th:if="${isAvailableMessaging}" title="Надіслати повідомлення"><i class="fas fa-envelope"></i></button>
+              </form>
+              <form th:action="'/send-invite/' + ${person.getUsername()}" th:method="post">
+                  <button type="submit" class="btn btn-primary mb-3 button-icon" th:if="${user != null} and ${!isFriend} and ${!isInviter} and ${!wasInvited}" title="Надіслати запит на дружбу"><i class="fas fa-user-plus"></i></button>
+              </form>
+              <form th:action="@{/remove-invite/} + ${person.getUsername()}" th:method="post">
+                  <button type="submit" class="btn btn-primary mb-3 button-icon" th:if="${isInviter}" title="Видалити запит на дружбу"><i class="fas fa-user-slash"></i></button>
+              </form>
+              <form th:action="@{/confirm-invite/} + ${person.getUsername()}" th:method="post">
+                  <button type="submit" class="btn btn-primary mb-3 button-icon" th:if="${wasInvited}" title="Погодитися на дружбу"><i class="fas fa-check-circle"></i></button>
+              </form>
+              <form th:action="@{/decline-invite/} + ${person.getUsername()}" th:method="post">
+                  <button type="submit" class="btn btn-primary mb-3 button-icon" th:if="${wasInvited}" title="Відмовити дружбу"><i class="fas fa-user-slash"></i></button>
+              </form>
+              <form th:action="@{/remove-friend/} + ${person.getUsername()}" th:method="post">
+                  <button type="submit" class="btn btn-primary mb-3 button-icon" th:if="${isFriend}" title="Видалити друга"><i class="fas fa-user-times"></i></button>
+              </form>
+          </div>
+      </div>
+      <hr>
+  </div>
+
+  <script th:src="@{https://kit.fontawesome.com/8144c1797c.js}" crossorigin="anonymous"></script>
+  <script th:src="@{/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

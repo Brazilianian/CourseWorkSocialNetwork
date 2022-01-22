@@ -1,0 +1,42 @@
+body{
+    background: #05021f;
+    font-size: 20px;
+}
+
+hr{
+    width: 75%;
+    display: block;
+    margin: 0.5em auto;
+    border-style: inset;
+    border-width: 1px;
+}
+
+h1{
+    color: white;
+}
+
+h4{
+    color: #ffffff;
+}
+
+i{
+    font-size: 35px;
+}
+
+a{
+    color: black;
+    text-decoration: none;
+}
+
+a:hover{
+    color: black;
+    cursor: pointer;
+}
+
+label{
+    margin: 3px;
+}
+
+#more{
+    display: none;
+}

@@ -1,0 +1,25 @@
+body {
+    background: #05021f;
+    color: white;
+    font-size: 20px;
+}
+
+span {
+    font-style: italic;
+    font-size: 26px;
+}
+
+i{
+    font-size: 24px;
+}
+
+.personal-info {
+    font-style: italic;
+    font-size: 20px;
+}
+
+.button-icon{
+    background: none;
+    border: none;
+}
+

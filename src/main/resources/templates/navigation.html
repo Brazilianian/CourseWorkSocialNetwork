@@ -1,0 +1,62 @@
+<div th:fragment="navigation">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                Головна
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/posting" th:if="${user != null} AND (${user.isAdmin()} OR ${user.isOwner()})">Постинг</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/admin" th:if="${user != null} AND (${user.isAdmin()} OR ${user.isOwner()})">Адмін</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/people">Люди</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/messages" th:if="${user != null} AND ${user.isActive()}">Чати</a>
+                    </li>
+                </ul>
+
+                <div class="profile">
+                    <form class="d-flex" th:action="@{/logout}" method="post">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item dropdown">
+                                <a th:if="${user != null} AND ${user.isActive()}" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Профіль
+                                    <img th:if="${user.getImage() == null}" th:src="@{/images/defaultUser.jpg}" width="30" height="30" class="d-inline-block align-text-top">
+                                    <img th:if="${user.getImage() != null}" th:src="*{'data:image/jpeg;base64,'+{user.getImage()}}" alt="some" width="30" height="30">
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="/profile" >Мій профіль <i class="far fa-user-circle i"></i></a></li>
+                                    <li><a class="dropdown-item" href="/notifications">Сповіщення <i class="far fa-bell i"></i></a></li>
+                                    <li><a class="dropdown-item" href="/settings">Налаштування <i class="fas fa-cogs i"></i></a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><button type="submit" class="dropdown-item">Вийти з акаунту <i class="far fa-times-circle i"></i></button></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </form>
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="/login" th:if="${user == null}">Увійти
+                                    <img th:src="@{/images/defaultUser.jpg}" width="30" height="30" class="d-inline-block align-text-top">
+                                </a>
+                            </li>
+                        </ul>
+                    </form>
+            </div>
+        </div>
+    </nav>
+</div>

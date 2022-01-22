@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Title</title>
+
+    <link media="all" rel="stylesheet" th:href="@{/css/navigation.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/notification.css}">
+
+</head>
+<body>
+
+<header th:insert="navigation.html ::navigation"></header>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4" th:each="notification:${notifications}">
+            <div class="card" style="width: 18rem; background: #2768c4">
+                <form th:action="@{/delete-notification/} + ${notification.getId()}" method="post">
+                    <button type="submit" class="button-icon" style="float: right;"><i class="far fa-times-circle" style="color: red;"></i></button>
+                </form>
+                <a th:href="@{/profile/} + ${notification.getSender().getUsername()}">
+                    <img th:src="${notification.getSender().getImage() == null}  ? @{/images/defaultUser.jpg} : *{'data:image/jpeg;base64,'+{notification.getSender().getImage()}}" class="card-img-top">
+                </a>
+                <div class="card-body">
+                    <th:block th:switch="${notification.getTypeOfNotification().name()}">
+                        <th:block th:case="'FRIEND_REQUEST'">
+                            <h5 class="card-title" th:text="${notification.getSender().getSurname()} + ' ' + ${notification.getSender().getName()} + ' хоче стати другом!'"></h5>
+                            <p class="card-text" th:text="${notification.getText()}"></p>
+                            <p th:if="${notification.getCountOfFiles() != 0}" th:text="${notification.getCountOfFiles()}"></p>
+                            <div style="display: flex; float: right;">
+                                <form th:action="@{/confirm-invite/} + ${notification.getSender().getUsername()}" method="post">
+                                    <button type="submit" class="button-icon" title="Погодитися на дружбу"><i class="fas fa-check-circle" style="font-size: 22px;"></i></button>
+                                </form>
+                                <form th:action="@{/decline-invite/} + ${notification.getSender().getUsername()}" method="post">
+                                    <button type="submit" class="button-icon" title="Відмовити дружбу"><i class="fas fa-user-slash" style="font-size: 22px;"></i></button>
+                                </form>
+                            </div>
+                        </th:block>
+                        <th:block th:case="'NEW_MESSAGE'">
+                            <h5 class="card-title" th:text="${notification.getSender().getSurname()} + ' ' + ${notification.getSender().getName()} + ' надіслав Вам повідомлення!'"></h5>
+                            <p class="card-text" th:text="${notification.getText()}"></p>
+                            <div style="display: flex; float: right;">
+                                <form th:action="@{/messages/} + ${notification.getSender().getUsername()}" method="post">
+                                    <button type="submit" class="button-icon" title="Надіслати повідомлення"><i class="fas fa-envelope"></i></button>
+                                </form>
+                            </div>
+                        </th:block>
+                        <th:block th:case="'SITE'">
+                            <a th:href="'/post/' + ${notification.getPost().getId()}">
+                            <h5 class="card-title" th:text="'Новий пост від сайту!'"></h5>
+                            <p class="card-text" th:text="${notification.getText()}"></p>
+                                <div style="display: flex; float: right;">
+                                    <h4>Перегляньте прямо зараз!</h4>
+                                </div>
+                            </a>
+                        </th:block>
+                  </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{https://kit.fontawesome.com/8144c1797c.js}" crossorigin="anonymous"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

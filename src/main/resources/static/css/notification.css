@@ -1,0 +1,25 @@
+body{
+    background: #05021f;
+}
+
+i {
+    font-size: 24px;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
+a:hover {
+    color: black;
+}
+
+.button-icon {
+    background: none;
+    border: none;
+}
+
+.card {
+    margin: 7px;
+}

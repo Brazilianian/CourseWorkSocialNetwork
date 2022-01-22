@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head xmlns:th="http://www.w3.org/1999/xhtml">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link media="all" rel="stylesheet" th:href="@{/css/navigation.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/posting.css}">
+    <script th:src="@{https://kit.fontawesome.com/8144c1797c.js}" crossorigin="anonymous"></script>
+
+    <script th:src="@{/js/posting.js}"></script>
+</head>
+<body>
+    <header th:insert="navigation.html ::navigation"></header>
+
+    <h1 style="text-align: center;">Цей пост побаче кожен на головній сторінці сайту</h1>
+
+    <div class="container" style="background: #363a3a;">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 col-sm-8" style="margin: 5px;">
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                    <div id="carousel-indicators" class="carousel-indicators">
+                        <div id="buttons">
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        </div>
+                    </div>
+
+                    <div id="carousel-items" class="carousel-inner">
+                        <div id="carousel">
+                            <div class="carousel-item active">
+                                <img th:src="@{/images/noImage.png}" class="d-block" height="100%" width="100%" id="img0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class style="margin: auto; margin-top: 10px;">
+                    <form th:action="@{/loadpost}" th:method="post" enctype="multipart/form-data">
+                            <label for="formFile" class="form-label">Виберіть фото</label>
+                            <input onchange="setCarousel(this)" class="form-control" id="formFile" type="file" name="images" accept=".png, .jpg, .jpeg, .jfif" multiple>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Введіть назву посту</label>
+                            <input type="text" name="name" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="text" class="form-label">Введіть текст посту</label>
+                            <div id="items"></div>
+                            <textarea class="form-control" id="text" name="text" placeholder="Мій проект..." rows="5"></textarea>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="flexCheckDefault" name="isNotifyUsers" value="true">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Оповістити користувачів мережі
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="margin: 0 0 5px 5px; float: right;">Опублікувати</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script th:src="@{https://kit.fontawesome.com/8144c1797c.js}" crossorigin="anonymous"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

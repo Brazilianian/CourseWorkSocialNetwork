@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" th:href="@{/css/login.css}">
+	<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+
+	<script th:src="@{https://kit.fontawesome.com/8144c1797c.js}" crossorigin="anonymous"></script>
+</head>
+
+<body>
+	<section class="vh-100 gradient-custom">
+		<div class="container py-1 h-100">
+			<div class="row d-flex justify-content-center align-items-center h-100">
+				<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+					<div class="card bg-dark text-white" style="border-radius: 1rem;">
+						<div class="card-body p-1 text-center">
+
+							<div class="mb-md-5 mt-md-4 pb-3">
+
+								<h2 class="fw-bold mb-2 text-uppercase">Авторизація</h2>
+								<p class="text-white-50 mb-5">Введіть Ваш логін та пароль</p>
+								<form th:action="@{/login}" method="post">
+									<div class="form-outline form-white mb-4">
+										<input name="username" type="text" id="text" class="form-control form-control-lg" />
+										<label class="form-label" for="text">Логін</label>
+									</div>
+
+									<div class="form-outline form-white mb-4">
+										<input name="password" type="password" id="typePasswordX" class="form-control form-control-lg" />
+										<label class="form-label" for="typePasswordX">Пароль</label>
+									</div>
+
+									<p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Забули пароль?</a></p>
+
+									<div class="form-outline form-white mb-2">
+										<input checked type="checkbox" id="remember" name="remember-me">
+										<label for="remember">Запам'ятати мене?</label>
+									</div>
+
+									<button class="btn btn-outline-light btn-lg px-5" type="submit">Авторизуватися</button>
+
+								</form>
+							</div>
+
+							<div>
+								<p class="mb-0">Ще не зареєструвалися? <a th:href="@{/registration}" class="text-white-50 fw-bold">Зареєструйтесь!</a></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<script th:src="@{https://kit.fontawesome.com/8144c1797c.js}" crossorigin="anonymous"></script>
+	<script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

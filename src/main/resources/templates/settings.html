@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Title</title>
+
+    <link media="all" rel="stylesheet" th:href="@{/css/navigation.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/settings.css}">
+
+</head>
+<body>
+<header th:insert="navigation.html ::navigation"></header>
+
+<main>
+    <div class="container" style="background: white;">
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-8">
+                <div class="accordion accordion-flush" id="accordionFlushExample">
+                    <form th:action="@{/update-settings}" method="post">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingOne">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                    Налаштування акаунту
+                                </button>
+                            </h2>
+                            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" name="isPrivateProfile" th:checked="${user.getSettings().isPrivateProfile()}">
+                                        <label class="form-check-label" for="flexSwitchCheckChecked">Приватний профіль</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                    Налаштування взаємодії з друзями
+                                </button>
+                            </h2>
+                            <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="isMessagingOnlyWithFriends" th:checked="${user.getSettings().isMessagingOnlyWithFriends()}">
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">Спілкування лише з друзями</label>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefaultTwo" name="isGettingNotificationsOnlyFromFriends" th:checked="${user.getSettings().isGettingNotificationsOnlyFromFriends()}">
+                                        <label class="form-check-label" for="flexSwitchCheckDefaultTwo">Отримувати оповіщення лише від друзів</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="flush-headingThree">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                                        Налаштування сайту
+                                    </button>
+                                </h2>
+                                <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefaultThree" name="isGettingNotificationsFromSite" th:checked="${user.getSettings().isGettingNotificationsFromSite()}">
+                                        <label class="form-check-label" for="flexSwitchCheckDefaultThree">Отримувати новини від сайту</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="submit" class="btn btn-primary" value="Зберегти зміни" style="float: right; margin: 7px 0;">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+    </div>
+</main>
+<script th:src="@{https://kit.fontawesome.com/8144c1797c.js}" crossorigin="anonymous"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Title</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link media="all" rel="stylesheet" th:href="@{/css/navigation.css}" type="text/css"/>
+</head>
+
+<body>
+    <header th:insert="navigation.html ::navigation"></header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10" style="background: #363a3a;">
+
+            <h1 style="font-size: 20px;">Пошук користувача по логіну</h1>
+
+            <form th:if="${user.isOwner()} OR ${user.isAdmin()}" method="post">
+                <div class="input-group mb-3">
+                    <input type="text" name="search" th:value="${search != null} ? ${search} : ''" class="form-control" aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
+                </div>
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h4>Відсортувати за:</h4>
+                        </div>
+                        <div class="col-md-8">
+                            <select name="field" id="sortSelect" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                                <option value="username">Логіном</option>
+                                <option value="name">Ім'ям</option>
+                                <option value="role">Ролю</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                                    <button type="button" th:onclick="sortOrder(true)" id="sortButton" style="background: none; border: none; float: right;">
+                                <i class="fas fa-sort-up"></i>
+                                <input type="text" name="order" value="true" style="display: none;">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <hr style="width: 100%;">
+            <div th:if="${users} != null" style="overflow-y: scroll; max-height: 70vh; border: 2px groove white;">
+                <div th:if="${users != null}" >
+                    <div class="container">
+                        <div class="row">
+                            <table class="table table-dark table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Фото</th>
+                                        <th scope="col">Логін</th>
+                                        <th scope="col">Змінити роль користувача</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="foundUser : ${users}" th:object="${foundUser}">
+                                        <th><img th:src="*{image == null} ? @{/images/defaultUser.jpg}
+                                                                          : @{'data:image/jpeg;base64,'+*{image}}" class="float-start" width="70rem" height="70rem" style="margin: 0.5rem;"></th>
+                                        <td><h4 th:text="*{username}"></h4></td>
+                                        <td>
+                                            <th:block th:if="${!foundUser.isOwner()}">
+                                                <select th:attr="onchange='setRole(' + ${foundUser.getId()} + ',' + ${foundUser.getUsername()} + ')'"
+                                                        th:id="'select' + ${foundUser.getId()}"
+                                                        class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                                                    <th:block th:if="${user.isOwner()}">
+                                                        <option th:if="${!foundUser.isUser()}" value="USER">USER</option>
+                                                        <option th:if="${foundUser.isUser()}" value="USER" selected>USER</option>
+                                                        <option th:if="${!foundUser.isAdmin()}" value="ADMIN">ADMIN</option>
+                                                        <option th:if="${foundUser.isAdmin()}" value="ADMIN" selected>ADMIN</option>
+                                                    </th:block>
+                                                    <th:block th:if="${user.isAdmin()}">
+                                                        <option th:if="${!foundUser.isUser()}" value="USER" disabled>USER</option>
+                                                        <option th:if="${foundUser.isUser()}" value="USER" selected disabled>USER</option>
+                                                        <option th:if="${!foundUser.isAdmin()}" value="ADMIN" disabled>ADMIN</option>
+                                                        <option th:if="${foundUser.isAdmin()}" value="ADMIN" selected disabled>ADMIN</option>
+                                                    </th:block>
+                                                </select>
+                                            </th:block>
+                                            <th:block th:if="${foundUser.isOwner()}">
+                                                <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                                                    <option value="1" selected disabled>OWNER</option>
+                                                </select>
+                                            </th:block>
+                                        </td>
+                                        <form method="post" th:id="'form' + ${foundUser.getId()}"></form>
+                                    </tr>
+                                </tbody>
+                            </table>
+<!--                            <div class="col-md-9" style="background: #363a3a;"-->
+<!--                                    th:attr="data-id=${foundUser.getId()},data-username=${foundUser.getUsername()}">-->
+<!--                                <h4 th:text="'Змінити роль користувача ' + ${foundUser.getUsername()}"></h4>-->
+<!--                            </div>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button th:if="${user.isOwner()} AND ${users} != null" type="submit" class="btn btn-primary mb-3" style="float: right; margin: 5px 0 0 0;">Підтвердити зміни</button>
+
+        </div>
+
+        <div class="col-md-1">
+
+        </div>
+    </div>
+</div>
+
+<script th:src="@{https://kit.fontawesome.com/8144c1797c.js}" crossorigin="anonymous"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/admin.js}"></script>
+
+</body>
+</html>

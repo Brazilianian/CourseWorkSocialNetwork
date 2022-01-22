@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Title</title>
+
+    <link media="all" rel="stylesheet" th:href="@{/css/navigation.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/messages.css}">
+
+</head>
+<body>
+<header th:insert="navigation.html ::navigation"></header>
+
+<div class="container" style="background: #363a3a;">
+    <div class="row" th:if="${chats.size() != 0}" th:each="chat : ${chats}">
+        <div class="col-md-2">
+            <th:block th:if="${chat.getFirstUser() == user}">
+                <a th:href="@{/profile/} + ${chat.getSecondUser().getUsername()}">
+                    <img th:if="${chat.getSecondUser().getImage() != null}" th:src="*{'data:image/jpeg;base64,'+{chat.getSecondUser().getImage()}}" class="ava">
+                    <img th:if="${chat.getSecondUser().getImage() == null}" th:src="@{/images/defaultUser.jpg}" class="ava">
+                    <label th:text="${chat.getSecondUser().getUsername()}" class="username"></label>
+                </a>
+            </th:block>
+            <th:block th:if="${chat.getSecondUser() == user}">
+                <a th:href="@{/profile/} + ${chat.getFirstUser().getUsername()}">
+                    <img th:if="${chat.getFirstUser().getImage() != null}" th:src="*{'data:mage/jpeg;base64,'+{chat.getFirstUser().getImage()}}" class="ava">
+                    <img th:if="${chat.getFirstUser().getImage() == null}" th:src="@{/images/defaultUser.jpg}" class="ava">
+                    <label th:text="${chat.getFirstUser().getUsername()}" class="username"></label>
+                </a>
+            </th:block>
+        </div>
+        <div class="col-md-8" style="font-size: 22px;">
+            <th:block th:if="${chat.getLastMessage() != null}">
+                <a style="display: flex" th:href="${chat.getFirstUser() == user} ? @{/messages/} + ${chat.getSecondUser().getUsername()} : @{/messages/} + ${chat.getFirstUser().getUsername()}">
+
+                    <th:block th:if="${chat.getLastMessage().getMessageFiles().size() != 0}" th:switch="${chat.getLastMessage().getMessageFiles().get(0).getFileType().name()}">
+
+                        <th:block th:case="'IMAGE'" th:title="${#temporals.format(chat.getLastMessage().getDateOfSending(), 'dd.MM.yyyy HH:mm')}">
+                            <img th:src="*{'data:image/jpeg;base64,'+{chat.getLastMessage.getMessageFiles.get(0).getContent()}}"
+                                 class="ava">
+                        </th:block>
+
+                        <th:block th:case="'AUDIO'">
+                            <audio th:title="${#temporals.format(chat.getLastMessage().getDateOfSending(), 'dd.MM.yyyy HH:mm')}" class="ava">
+                                <source th:src="*{'data:audio/mp3;base64,'+{chat.getLastMessage().getMessageFiles.get(0).getContent()}}">
+                            </audio>
+                        </th:block>
+
+                        <th:block th:case="'VIDEO'">
+                            <video class="ava" th:title="${#temporals.format(chat.getLastMessage().getDateOfSending(), 'dd.MM.yyyy HH:mm')}">
+                                <source th:src="*{'data:video/mp4;base64,'+{chat.getLastMessage().getMessageFiles.get(0).getContent()}}" >
+                            </video>
+                        </th:block>
+                    </th:block>
+                    <label th:if="${chat.getLastMessage().getText() != null}" th:text="${chat.getLastMessage().getText()}"
+                           th:title="${#temporals.format(chat.getLastMessage().getDateOfSending(), 'dd.MM.yyyy HH:mm')}"></label>
+                </a>
+            </th:block>
+        </div>
+        <div class="col-md-2">
+            <label th:if="${chat.getLastMessage() != null}" th:text="${#temporals.format(chat.getLastMessage().getDateOfSending(), 'HH:mm dd.MM.yyyy')}"></label>
+        </div>
+        <hr>
+    </div>
+    <div th:if="${chats.size() == 0}">
+        <h1 class="text-center">У вас ще немає чатів, напишіть комусь!</h1>
+    </div>
+</div>
+
+<script th:src="@{https://kit.fontawesome.com/8144c1797c.js}" crossorigin="anonymous"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

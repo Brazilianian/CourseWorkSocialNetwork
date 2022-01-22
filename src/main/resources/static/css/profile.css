@@ -1,0 +1,19 @@
+body{
+    background: #05021f;
+}
+
+label{
+    color: white;
+}
+
+.form-control{
+    margin:5px;
+}
+
+.right{
+    text-align: right;
+}
+
+.center{
+    text-align: center;
+}

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link media="all" rel="stylesheet" th:href="@{/css/navigation.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/star.css}">
+    <title>Title</title>
+<body>
+    <header th:insert="navigation.html ::navigation"></header>
+
+    <main>
+        <div class="main-body ">
+            <h1 style="color: white;">Вітаю на головній сторінці нашого сайту!</h1>
+            <hr>
+            <div class="container">
+                <div class="posts" th:each="post:${posts}" th:if="${posts != null}">
+                    <th:block th:if="(${user != null} AND ${user.isUser()} AND ${!post.getHiddenFromUsers()}) OR (${user == null} OR ${!user.isUser()})">
+                        <div class="row" style="border: 2px double black;" th:id="'post' + ${post.getId()}">
+                            <div class="col-md-2  col-sm-2" style="background-color: #ff9999">
+                                <div class="bg-info clearfix">
+                                    <a th:href="@{/profile/} + ${post.getUser().getUsername()}">
+                                        <img th:if="${post.getUser().getImage() != null}" th:src="*{'data:image/jpeg;base64,'+{post.getUser().getImage()}}" class="float-start" width="70rem" height="70rem" style="margin: 0.5rem;">
+                                        <img th:if="${post.getUser().getImage() == null}" th:src="@{/images/defaultUser.jpg}" class="float-start" width="70rem" height="70rem" style="margin: 0.5rem;">
+                                        <span th:text="'@' + ${post.getUser().getUsername()}" style="font-style: italic;"></span>
+                                        <br>
+                                        <span th:text="${post.getUser().getSurname()} + ' ' + ${post.getUser().getName()}"></span>
+                                    </a>
+                                </div>
+                                <p th:text="${#dates.format(post.getDateOfPosting(), 'dd.MM.yyyy HH:mm')}"></p>
+                            </div>
+
+                            <div class="col-md-9  col-sm-9" style="background-color: #99CCFF; border: 1px double black;">
+                                <a th:href="'post/' + ${post.getId()} + '/'">
+                                    <h1 th:text="${post.getName()}" style="font-style: italic;"></h1>
+                                </a>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-3" th:if="${post.getImages() != null} AND ${post.getImages().size != 0}">
+                                            <a th:href="'post/' + ${post.getId()} + '/'">
+                                                <img th:src="*{'data:image/jpeg;base64,'+{post.getImages().get(0).getValue()}}" class="img-thumbnail" >
+                                             </a>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <a th:href="'post/' + ${post.getId()} + '/'">
+                                                <label th:if="${post.getText().length() <= 150}" th:text="${post.getText()} + '...'" style="color: #000000;"></label>
+                                                <label th:if="${post.getText().length() > 150}" th:text="${post.getText().substring(0, 150)} + '...'" style="color: #000000;"></label>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-1 col-sm-1" style="background-color: #00CC99;">
+                                <div style="margin: 25% 0%;">
+
+                                <!--like-->
+                                    <th:block th:if="${user != null}">
+                                        <form th:action="@{/post/} + ${post.getId()} + @{/like-main}" th:id="'likeForm' + ${post.getId()}" method="post" class="like form">
+                                            <button type="submit" class="icons"
+                                                    th:onclick="${post.wasLikedByUser(user)} ? 'like(' + ${post.getId()} + ', true)' : 'like(' + ${post.getId()} + ', false)'"
+                                                    th:id="'likeButton' + ${post.getId()}">
+                                                <span th:id="'span' + ${post.getId()}">
+                                                   <i class="far fa-heart" th:if="${!post.wasLikedByUser(user)}"></i>
+                                                   <i class="fas fa-heart" style="color: red;" th:if="${post.wasLikedByUser(user)}"></i>
+                                                </span>
+                                                    <label th:id="'likesCount' + ${post.getId()}" th:text="${post.getLikes().size()}"></label>
+                                            </button>
+                                        </form>
+                                    </th:block>
+
+                                    <div th:if="${user == null}" style="text-align: right;">
+                                        <i class="far fa-heart"></i>
+                                        <label th:id="'likesCount' + ${post.getId()}" th:text="${post.getLikes().size()}"></label>
+                                    </div>
+
+                                        <!--hide-->
+                                    <form th:if="${user != null} AND (${user.isAdmin()} OR ${user.isOwner()})" th:action="@{/post/} + ${post.getId()} + @{/hide-main}" method="post" class="form">
+                                        <button th:onclick="'hideFromUsers(' + ${post.getHiddenFromUsers()} + ', ' + ${post.getId()} + ')'"
+                                                class="icons" th:id="'hideButton' + ${post.getId()}" type="submit">
+                                            <i class="fas fa-eye" th:if="${!post.getHiddenFromUsers()}"></i>
+                                            <i class="far fa-eye-slash" th:if="${post.getHiddenFromUsers()}"></i>
+                                        </button>
+                                    </form>
+
+                                    <!--trash-->
+                                    <form th:if="${user != null} AND ${user.isOwner()}" th:action="@{/delete-post/} + ${post.getId()}" th:id="'subForm'+${post.getId()}" method="post" class="form">
+                                        <button class="icons" type="submit" th:onclick="'deletePost(' + ${post.getId()} + ')'">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{https://kit.fontawesome.com/8144c1797c.js}" crossorigin="anonymous"></script>
+    <script th:src="@{/js/star.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/like.js}"></script>
+</body>
+</html>

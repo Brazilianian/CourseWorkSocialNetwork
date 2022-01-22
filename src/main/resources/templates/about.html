@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link media="all" rel="stylesheet" th:href="@{/css/navigation.css}" type="text/css"/>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/about.css}" rel="stylesheet">
+</head>
+<body>
+    <form th:action="'/likeVerse/'+${verse.id}" method="post" th:id="'form'+${verse.id}">
+        <button th:onclick="${!verse.isLike} ? 'like('+${verse.id}+', false)' : 'like('+${verse.id}+', true)'" type="submit"  th:id="'like__btn'+${verse.id}" class="like__btn mt-2">
+                      <span class="icon" th:id="'icon'+${verse.id}">
+                          <i th:if="${!verse.isLike}" class="far fa-thumbs-up"></i>
+                          <i th:unless="${!verse.isLike}" class="fas fa-thumbs-up"></i>
+                      </span>
+            <span class="count" th:id="'count'+${verse.id}" th:text="${verse.amountOfLikes}"></span> Like
+        </button>
+    </form>
+<header th:insert="navigation.html ::navigation"></header>
+<script th:src="@{https://kit.fontawesome.com/8144c1797c.js}" crossorigin="anonymous"></script>
+</body>
+</html>

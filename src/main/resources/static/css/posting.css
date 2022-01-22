@@ -1,0 +1,93 @@
+body{
+    background: #05021f;
+    overflow-x: hidden;
+    font-size: 20px;
+}
+
+label{
+    color: white;
+}
+
+h1, h4{
+    color: white;
+}
+
+.input-form{
+    width: 70rem;
+    margin: auto;
+    display: block;
+}
+
+textarea {
+    height: 10rem;
+    margin: 5px;
+}
+
+i{
+    font-size: 2em;
+    margin: 5px 5px 0 5px;
+    color: white;
+}
+
+hr{
+   width: 75%;
+   display: block;
+    margin: 0.5em auto;
+    border-style: inset;
+   border-width: 1px;
+}
+
+a{
+    color: black;
+    text-decoration: none;
+}
+
+pre {
+    font-size: 20px;
+}
+
+a:hover {
+    color: black;
+}
+
+.flex input[type="file"]{
+    display: none;
+}
+
+.mini-img{
+    width: 5rem;
+    height: 5rem;
+    margin: 1rem;
+}
+
+.mini-video{
+    width: 15rem;
+    height: 15rem;
+    margin: 1rem;
+}
+
+.fileMess{
+    display: none;
+}
+
+.input{
+    width: 10rem;
+    height: 10rem;
+    margin: 4px;
+}
+
+.like{
+    outline: none;
+    text-decoration: none;
+    color: black;
+}
+
+.like:hover{
+    cursor: pointer;
+    color: red;
+}
+
+.icons{
+    background: none;
+    border: none;
+}

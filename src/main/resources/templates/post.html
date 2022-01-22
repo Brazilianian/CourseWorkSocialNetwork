@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Title</title>
+
+    <link th:href="@{/css/navigation.css}" media="all" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" >
+    <link rel="stylesheet" th:href="@{/css/posting.css}">
+    <link rel="stylesheet" th:href="@{/css/star.css}">
+</head>
+<body>
+
+<header th:insert="navigation.html ::navigation"></header>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-2" style="background: #555c8d;">
+            <a th:href="@{/profile/} + ${post.getUser().getUsername()}" style="color: white;">
+                <img th:if="${post.getUser().getImage() != null}" th:src="*{'data:image/jpeg;base64,'+{post.getUser().getImage()}}" class="float-start" alt="some" width="100rem" height="100rem" style="margin: 5px;">
+                <img th:if="${post.getUser().getImage() == null}" th:src="@{/images/defaultUser.jpg}" class="float-start" width="100rem" height="100rem" style="margin: 5px;">
+                <span th:text="'@' + ${post.getUser().getUsername()}" style="font-style: italic;"></span>
+                <br>
+                <span th:text="${post.getUser().getSurname()} + ' ' + ${post.getUser().getName()}"></span>
+            </a>
+            <p th:text="${#dates.format(post.getDateOfPosting(), 'dd.MM.yyyy HH:mm')}" style="color: white;"></p>
+        </div>
+
+        <div class="col-md-8">
+            <h1 th:text="${post.getName()}" style="text-align: center;"></h1>
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <th:block th:each="image:${post.getImages()}">
+                        <button th:if="${image.getKey()} == 0" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button th:unless="${image.getKey()} == 0" type="button" data-bs-target="#carouselExampleIndicators" th:data-bs-slide-to="${image.getKey()}" th:aria-label="'Slide ' + ${image.getKey() + 1}"></button>
+                    </th:block>
+                </div>
+
+                <th:block th:if="${post.getImages().size > 0}">
+                    <div class="carousel-inner">
+                        <th:block th:each="image: ${post.getImages()}">
+                            <div th:if="${image.getKey()} == 0" class="carousel-item active">
+                                <img th:src="*{'data:image/jpeg;base64,'+{image.getValue()}}" class="d-block w-100">
+                            </div>
+                            <div th:unless="${image.getKey()} == 0" class="carousel-item">
+                                <img th:src="*{'data:image/jpeg;base64,'+{image.getValue()}}" class="d-block w-100">
+                            </div>
+                        </th:block>
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </th:block>
+
+            </div>
+        </div>
+        <div class="col-md-2" style="background: #555c8d;"></div>
+    </div>
+
+    <!--likes-->
+        <div class="row" style="margin: 10px; border: 1px groove white;">
+            <div class="col-md-12" style="padding: 10px;">
+                <label th:text="${post.getText()}" style="text-align: left;"></label>
+            </div>
+
+            <form th:if="${user != null}" th:action="@{/post/} + ${post.getId()} + @{/like}" th:id="'likeForm' + ${post.getId()}" method="post" class="like" style="text-align: right;">
+                <button type="submit" style="background: none; border: none;"
+                        th:onclick="${post.wasLikedByUser(user)} ? 'like(' + ${post.getId()} + ', true)' : 'like(' + ${post.getId()} + ', false)'"
+                        th:id="'likeButton' + ${post.getId()}">
+                                        <span th:id="'span' + ${post.getId()}">
+                                           <i class="far fa-heart" th:if="${!post.wasLikedByUser(user)}"></i>
+                                           <i class="fas fa-heart" style="color: red;" th:if="${post.wasLikedByUser(user)}"></i>
+                                        </span>
+                    <label th:id="'likesCount' + ${post.getId()}" th:text="${post.getLikes().size()}"></label>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!--send comment-->
+    <div class="row" th:if="${user != null}">
+        <h4 style="text-align: center;">Залиште свій коментар!</h4>
+        <div class="col-md-2" style="background: #8a9096">
+            <a th:href="@{/profile/} + ${user.getUsername()}" >
+                <img th:if="${user.getImage() != null}" th:src="*{'data:image/jpeg;base64,'+{user.getImage()}}" class="float-start" alt="some" width="100rem" height="100rem" style="margin: 5px;">
+                <img th:if="${user.getImage() == null}" th:src="@{/images/defaultUser.jpg}" class="float-start" width="100rem" height="100rem" style="margin: 5px;">
+                <span th:text="'@' + ${user.getUsername()}" style="font-style: italic;"></span>
+                <br>
+                <span th:text="${user.getSurname()} + ' ' + ${user.getName()}"></span>
+            </a>
+        </div>
+
+        <div class="col-md-8">
+            <div id="items"></div>
+            <form th:action="@{/post/} + ${post.getId()} + @{/send-comment}" method="post" enctype="multipart/form-data">
+                <textarea class="form-control" name="text" placeholder="Власне я вважаю..." rows="5" required></textarea>
+                <div style="float:right;" class="flex">
+                    <input onchange="setAudios()" name="audios" id="audio" class="fileMess" type="file" accept="audio/*" multiple>
+                    <label for="audio"><i class="fas fa-file-audio"></i></label>
+
+                    <input onchange="setVideos()" name="videos" id="video" class="fileMess" type="file" accept="video/*" multiple>
+                    <label for="video"><i class="fas fa-video"></i></label>
+
+                    <input onchange="setImages()" name="images" id="image" class="fileMess" type="file" accept=".png, .jpg, .jpeg, .jfif" multiple>
+                    <label for="image"><i class="fas fa-image"></i></label>
+                </div>
+                <input th:if="${user.isActive()}" onclick="removeItems()" type="submit" class="btn btn-primary" value="Надіслати" style="margin: 5px;">
+                <a href="/registration">
+                    <input th:unless="${user.isActive()}" onclick="removeItems()" type="button" class="btn btn-primary" value="Стань членом мережі!" style="margin: 5px;">
+                </a>
+            </form>
+        </div>
+        <div class="col-md-2" style="background: #8a9096"></div>
+    </div>
+
+    <!--old comments-->
+    <div class="row" th:each="comment:${post.getComments()}" style="border: 2px groove white;">
+        <hr>
+        <div class="col-md-2" style="background: #5c636a">
+            <a th:href="@{/profile/} + ${comment.getSender().getUsername()}" >
+                <img th:if="${comment.getSender().getImage() != null}" th:src="*{'data:image/jpeg;base64,'+{comment.getSender().getImage()}}" class="float-start" alt="some" width="100rem" height="100rem" style="margin: 5px;">
+                <img th:if="${comment.getSender().getImage() == null}" th:src="@{/images/defaultUser.jpg}" class="float-start" width="100rem" height="100rem" style="margin: 5px;">
+                <span th:text="'@' + ${comment.getSender().getUsername()}" style="font-style: italic;"></span>
+                <br>
+                <span th:text="${comment.getSender().getSurname()} + ' ' + ${comment.getSender().getName()}"></span>
+            </a>
+            <p th:text="${#temporals.format(comment.getDateOfSending(), 'dd-MM-yyyy HH:mm')}"></p>
+        </div>
+        <div class="col-md-8">
+            <pre><label th:if="${comment.getText() != null}" th:title="${#temporals.format(comment.getDateOfSending(), 'dd-MM-yyyy HH:mm')}" th:text="${comment.getText()}" style="text-align: right;"></label></pre>
+            <th:block th:if="${comment.getMessageFiles() != null}" th:each="file:${comment.getMessageFiles()}">
+                <th:block th:switch="${file.getFileType().name()}">
+                    <th:block th:case="'IMAGE'">
+                        <img class="input" th:src="*{'data:image/jpeg;base64,'+{file.getContent()}}" th:name="${file.getFileName()}" th:title="${#temporals.format(comment.getDateOfSending(), 'dd-MM-yyyy HH:mm')}">
+                    </th:block>
+
+                    <th:block th:case="'AUDIO'">
+                        <audio controls th:title="${#temporals.format(comment.getDateOfSending(), 'dd-MM-yyyy HH:mm')}">
+                            <source th:src="*{'data:audio/mp3;base64,'+{file.getContent()}}">
+                        </audio>
+                    </th:block>
+
+                    <th:block th:case="'VIDEO'">
+                        <video class="input" controls th:title="${#temporals.format(comment.getDateOfSending(), 'dd-MM-yyyy HH:mm')}">
+                            <source th:src="*{'data:video/mp4;base64,'+{file.getContent()}}">
+                        </video>
+                    </th:block>
+                </th:block>
+            </th:block>
+        </div>
+
+    <!--comment like-->
+    <div class="col-md-2" style="background: #5c636a">
+        <th:block th:if="${user.isActive()}">
+            <form th:action="@{/post/} + ${post.getId()} + @{/comment/} + ${comment.getId()} + @{/like/}" th:id="'likeForm' + ${comment.getId()}" method="post" class="like form">
+                <button type="submit" class="icons"
+                        th:onclick="${comment.wasLikedByUser(user)} ? 'like(' + ${comment.getId()} + ', true)' : 'like(' + ${comment.getId()} + ', false)'"
+                        th:id="'likeButton' + ${comment.getId()}">
+                                                <span th:id="'span' + ${comment.getId()}">
+                                                   <i class="far fa-heart" th:if="${!comment.wasLikedByUser(user)}"></i>
+                                                   <i class="fas fa-heart" style="color: red;" th:if="${comment.wasLikedByUser(user)}"></i>
+                                                </span>
+                    <label th:id="'likesCount' + ${comment.getId()}" th:text="${comment.getLikes().size()}"></label>
+                </button>
+            </form>
+        </th:block>
+    </div>
+</div>
+    <script th:src="@{/js/posting.js}"></script>
+    <script th:src="@{/js/star.js}"></script>
+    <script th:src="@{https://kit.fontawesome.com/8144c1797c.js}" crossorigin="anonymous" ></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/like.js}"></script>
+</body>
+</html>

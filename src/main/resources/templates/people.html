@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link media="all" rel="stylesheet" th:href="@{/css/navigation.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{css/people.css}">
+
+</head>
+<body>
+
+<header th:insert="navigation.html ::navigation"></header>
+
+<main>
+    <form method="post">
+        <div class="container" style="background: #363a3a;">
+            <div class="row">
+                <div class="col-md-3">
+                    <h4>Пошук користувача по логіну</h4>
+                </div>
+                <div class="col-md-9">
+                    <div class="input-group mb-3">
+                        <input type="text" name="search" class="form-control" aria-label="Recipient's username" aria-describedby="button-addon2">
+                        <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" >
+                <div class="col-md-3">
+                    <h4>Відсортувати за:</h4>
+                </div>
+                <div class="col-md-8">
+                    <select name="field" id="sortSelect" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                        <option value="username">Логіном</option>
+                        <option value="name">Ім'ям</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" th:onclick="sortOrder(true)" id="sortButton" style="background: none; border: none; float: right;">
+                        <i class="fas fa-sort-up"></i>
+                        <input type="text" name="order" value="true" style="display: none;">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <th:block th:if="${user != null} AND ${friends.size() != 0}">
+        <h1 th:text="'Ваші друзі (' + ${friends.size()} + '):'" style="text-align: center"></h1>
+        <hr>
+        <div class="container">
+            <div th:each="friend:${friends}">
+                <div class="row">
+                    <div class="col-md-3" style="background-color: #ff9999">
+                        <div class="bg-info clearfix">
+                            <a th:href="@{/profile/} + ${friend.getUsername()}">
+                                <img th:if="${friend.getImage() != null}" th:src="*{'data:image/jpeg;base64,'+{friend.getImage()}}" class="float-start" style="margin: 5px;" width="70rem" height="70rem">
+                                <img th:if="${friend.getImage() == null}" th:src="@{/images/defaultUser.jpg}" class="float-start" style="margin: 5px;" width="70rem" height="70rem">
+                                <span th:text="'@' + ${friend.getUsername()}" style="font-style: italic;"></span>
+                                <br>
+                                <span th:text="${friend.getSurname()} + ' ' + ${friend.getName()}"></span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-7" style="background-color: #99CCFF">
+                        <a th:href="@{/profile/} + ${friend.getUsername()}" th:if="${friend.getDescription() != null}">
+                            <label th:if="${friend.getDescription().length <= 150}" th:utext="${friend.getDescription()} + '...'" style="color: black; font-size: 20px;"></label>
+                            <label th:if="${friend.getDescription().length > 150}" th:utext="${friend.getDescription()} + '...'" style="color: black; font-size: 20px;"></label>
+                        </a>
+                        <th:block th:if="${friend.getDescription() != null}">
+                            <button th:if="${friend.getDescription().length > 150}" type="button" th:id="'myBtn' + ${friend.getId()}"
+                                    th:onclick="'readMore(' + ${friend.getId()} + ')' "
+                                    class="btn btn-outline-dark" style="float: right;">Читати далі</button>
+                        </th:block>
+                    </div>
+                    <div class="col-md-2" style="background-color: #00CC99">
+                        <a th:href="@{/profile/} + ${friend.getUsername()}">
+                            <h3 th:text="'Друзів - ' + ${friend.getFriends().size()}"></h3>
+                        </a>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:if="${friends == null} OR ${friends.size() == 0}">
+        <h1 style="text-align: center;">У вас поки що немає друзів :(</h1>
+        <hr>
+    </th:block>
+
+    <div th:if="${people.size() != 0}">
+        <h1 class="text-center" th:text="'Інші користувачі мережі (' + ${people.size()} + '):'" style="text-align: center"></h1>
+        <hr>
+        <th:block th:each="person : ${people}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3" style="background-color: #ff9999">
+                        <div class="bg-info clearfix">
+                            <a th:href="@{/profile/} + ${person.getUsername()}">
+                                <img th:if="${person.getImage() != null}" th:src="*{'data:image/jpeg;base64,'+{person.getImage()}}" class="float-start" style="margin: 5px;" width="70rem" height="70rem">
+                                <img th:if="${person.getImage() == null}" th:src="@{/images/defaultUser.jpg}" class="float-start" style="margin: 5px;" width="70rem" height="70rem">
+                                <span th:text="'@' + ${person.getUsername()}" style="font-style: italic;"></span>
+                                <br>
+                                <span th:text="${person.getSurname()} + ' ' + ${person.getName()}"></span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-7" style="background-color: #99CCFF">
+                        <a th:href="@{/profile/} + ${person.getUsername()}" th:if="${person.getDescription() != null}">
+                            <label th:utext="${person.getDescription()}" style="color: black; font-size: 20px;"></label>
+                        </a>
+                        <th:block th:if="${person.getDescription() != null}">
+                            <button th:if="${person.getDescription().length > 150}" type="button" th:id="'myBtn' + ${person.getId()}"
+                                    th:onclick="'readMore(' + ${person.getId()} + ')' "
+                                    class="btn btn-outline-dark" style="float: right;">Читати далі</button>
+                        </th:block>
+                    </div>
+                    <div class="col-md-2" style="background-color: #00CC99">
+                        <a th:href="@{/profile/} + ${person.getUsername()}">
+                            <h3 th:text="'Друзів - ' + ${person.getFriends().size()}"></h3>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+        </th:block>
+    </div>
+    <div th:if="${people.size() == 0}">
+        <h1 class="text-center">Поки що немає користувачів мережі</h1>
+    </div>
+</main>
+
+<script th:src="@{https://kit.fontawesome.com/8144c1797c.js}" crossorigin="anonymous"></script>
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/admin.js}"></script>
+
+</body>
+</html>

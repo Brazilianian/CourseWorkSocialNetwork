@@ -1,0 +1,50 @@
+body{
+    background: #05021f;
+    color: black;
+}
+
+pre{
+    font-size: 20px;
+}
+
+textarea {
+    height: 10rem;
+    margin: 5px;
+}
+
+input[type="file"]{
+    display: none;
+}
+
+i{
+    color: white;
+    font-size: 2em;
+    margin: 5px 5px 0 5px;
+}
+
+i:hover{
+    cursor: pointer;
+}
+
+.input{
+    float: right;
+    width: 15rem;
+    height: 15rem;
+    margin: 4px;
+}
+
+.mini-img{
+    width: 5rem;
+    height: 5rem;
+    margin: 1rem;
+}
+
+.mini-video{
+    width: 15rem;
+    height: 15rem;
+    margin: 1rem;
+}
+
+pre{
+    margin: 0;
+}
